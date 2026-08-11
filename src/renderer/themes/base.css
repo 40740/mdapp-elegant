@@ -1,0 +1,1135 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+#titlebar {
+  -webkit-app-region: drag;
+  height: 52px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+#agent-dot {
+  position: absolute;
+  top: 22px;
+  right: 16px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.3;
+  -webkit-app-region: no-drag;
+  transition: background 0.3s ease, opacity 0.3s ease;
+}
+
+#slides-btn {
+  position: absolute;
+  top: 14px;
+  right: 68px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  -webkit-app-region: no-drag;
+  transition: background 0.15s, color 0.15s;
+}
+
+#file-toggle-btn {
+  position: absolute;
+  top: 12px;
+  right: 32px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-app-region: no-drag;
+  transition: background 0.15s, color 0.15s;
+}
+
+#file-toggle-btn:hover {
+  background: rgba(127, 127, 127, 0.14);
+  color: var(--text-color);
+}
+
+#file-toggle-btn.active {
+  background: rgba(127, 127, 127, 0.14);
+  color: var(--text-color);
+}
+
+#file-toggle-btn.active:hover {
+  background: rgba(127, 127, 127, 0.2);
+}
+
+#slides-btn:hover {
+  background: var(--accent-soft, rgba(241,117,45,0.12));
+  color: #F1752D;
+}
+
+#slides-btn.visible {
+  display: flex;
+}
+
+#agent-dot.active {
+  background: #e8913a;
+  opacity: 1;
+  animation: agent-breathe 2s ease-in-out infinite;
+}
+
+#agent-dot.cooldown {
+  background: #3dba5c;
+  opacity: 1;
+  animation: none;
+}
+
+@keyframes agent-breathe {
+  0%, 100% { opacity: 0.45; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+#editor {
+  height: calc(100vh - 52px);
+  overflow-y: auto;
+  padding: 0 40px 40px;
+}
+
+#source-editor {
+  display: none;
+  height: calc(100vh - 52px);
+  width: 100%;
+  padding: 40px;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  resize: none;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'SF Mono', 'Fira Code', Menlo, Monaco, monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  tab-size: 2;
+}
+
+#source-editor.visible {
+  display: block;
+}
+
+/* Same-directory file panel */
+#file-panel {
+  position: fixed;
+  top: 52px;
+  left: 0;
+  bottom: 0;
+  width: 220px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-color);
+  border-right: 1px solid var(--border-color);
+  overflow-y: auto;
+  padding: 10px 8px;
+}
+
+#file-panel[hidden] {
+  display: none;
+}
+
+.file-panel-header {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 8px 8px;
+  user-select: none;
+}
+
+#file-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+#file-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#file-list button:hover {
+  background: rgba(127, 127, 127, 0.14);
+}
+
+#file-list button.active {
+  background: rgba(241, 117, 45, 0.14);
+  color: #F1752D;
+}
+
+body.show-file-panel #editor,
+body.show-file-panel #source-editor {
+  margin-left: 220px;
+}
+
+#editor.hidden {
+  display: none;
+}
+
+#editor .ProseMirror {
+  outline: none;
+  max-width: 780px;
+  margin: 0 auto;
+  min-height: calc(100vh - 92px);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-color);
+}
+
+#editor .ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+/* Typography */
+#editor .ProseMirror h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.25;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#editor .ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#editor .ProseMirror h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+#editor .ProseMirror h4,
+#editor .ProseMirror h5,
+#editor .ProseMirror h6 {
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+#editor .ProseMirror p {
+  margin: 0.5em 0;
+}
+
+#editor .ProseMirror a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+#editor .ProseMirror a:hover {
+  text-decoration: underline;
+}
+
+#editor .ProseMirror strong {
+  font-weight: 600;
+}
+
+/* Code */
+#editor .ProseMirror code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.875em;
+  font-family: 'SF Mono', 'Fira Code', Menlo, monospace;
+}
+
+#editor .ProseMirror pre {
+  background: var(--code-block-bg);
+  color: var(--code-block-text, var(--text-color));
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+#editor .ProseMirror pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+
+/* Code block one-click copy button (hover top-right corner) */
+.code-copy-btn {
+  position: fixed;
+  z-index: 50;
+  display: none;
+  padding: 2px 12px;
+  font-size: 12px;
+  line-height: 22px;
+  color: var(--text-muted);
+  background: var(--code-block-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  user-select: none;
+}
+
+.code-copy-btn:hover {
+  color: var(--text-color);
+  border-color: var(--link-color);
+}
+
+/* Blockquote */
+#editor .ProseMirror blockquote {
+  border-left: 4px solid var(--blockquote-border);
+  padding-left: 16px;
+  margin: 1em 0;
+  color: var(--text-muted);
+}
+
+/* Lists */
+#editor .ProseMirror ul,
+#editor .ProseMirror ol {
+  padding-left: 24px;
+  margin: 0.5em 0;
+}
+
+#editor .ProseMirror li {
+  margin: 0.25em 0;
+}
+
+#editor .ProseMirror li > p {
+  margin: 0;
+}
+
+/* Task lists (GFM checkboxes) */
+#editor .ProseMirror li[data-item-type="task"] {
+  position: relative;
+  list-style: none;
+  padding-left: 1.6em;
+}
+
+#editor .ProseMirror li[data-item-type="task"]::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  width: 0.95em;
+  height: 0.95em;
+  border: 1.5px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-color);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+#editor .ProseMirror li[data-item-type="task"]:hover::before {
+  border-color: var(--text-muted);
+}
+
+#editor .ProseMirror li[data-item-type="task"][data-checked="true"]::before {
+  background: var(--link-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8l3 3 6-6.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat;
+  border-color: var(--link-color);
+}
+
+#editor .ProseMirror li[data-item-type="task"][data-checked="true"] > p {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* Highlight (==text==) */
+#editor .ProseMirror mark {
+  background: var(--highlight-bg, #fff3bf);
+  color: inherit;
+  padding: 0 0.15em;
+  border-radius: 3px;
+}
+
+/* Table */
+#editor .ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+#editor .ProseMirror th,
+#editor .ProseMirror td {
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+#editor .ProseMirror th {
+  background: var(--table-header-bg);
+  font-weight: 600;
+}
+
+/* HR */
+#editor .ProseMirror hr {
+  border: none;
+  border-top: 2px solid var(--border-color);
+  margin: 2em 0;
+}
+
+/* Image */
+#editor .ProseMirror img {
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+#editor .ProseMirror ::selection {
+  background: var(--selection-bg);
+}
+
+/* ======= THEMES ======= */
+
+body, body.theme-light {
+  --bg-color: #ffffff;
+  --text-color: #24292f;
+  --text-muted: #656d76;
+  --border-color: #d0d7de;
+  --link-color: #0969da;
+  --code-bg: rgba(175, 184, 193, 0.2);
+  --code-block-bg: #f6f8fa;
+  --blockquote-border: #d0d7de;
+  --table-header-bg: #f6f8fa;
+  --selection-bg: rgba(9, 105, 218, 0.15);
+  --highlight-bg: #fff3bf;
+}
+
+body.theme-dark {
+  --bg-color: #0d1117;
+  --text-color: #e6edf3;
+  --text-muted: #8b949e;
+  --border-color: #30363d;
+  --link-color: #58a6ff;
+  --code-bg: rgba(110, 118, 129, 0.3);
+  --code-block-bg: #161b22;
+  --blockquote-border: #30363d;
+  --table-header-bg: #161b22;
+  --selection-bg: rgba(88, 166, 255, 0.2);
+  --highlight-bg: rgba(210, 153, 34, 0.35);
+}
+
+body.theme-elegant {
+  --bg-color: #f0edea;
+  --text-color: #2c2c2c;
+  --text-muted: #777;
+  --border-color: #d8d3ce;
+  --link-color: #c44b2b;
+  --code-bg: #e8e4df;
+  --code-block-bg: #2c2c2c;
+  --code-block-text: #e0dcd7;
+  --blockquote-border: #c44b2b;
+  --blockquote-bg: #eae6e1;
+  --table-header-bg: #eae6e1;
+  --table-border: #d8d3ce;
+  --selection-bg: rgba(196, 75, 43, 0.2);
+  --highlight-bg: #f0d9a8;
+}
+
+body.theme-elegant #editor .ProseMirror {
+  font-family: 'LXGW WenKai', 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+  line-height: 1.9;
+}
+
+body.theme-elegant #editor .ProseMirror strong {
+  color: #c44b2b;
+}
+
+body.theme-elegant #editor .ProseMirror code {
+  color: #c44b2b;
+}
+
+body.theme-elegant #editor .ProseMirror pre {
+  color: var(--code-block-text);
+}
+
+body.theme-elegant #editor .ProseMirror pre code {
+  color: inherit;
+}
+
+body.theme-elegant #editor .ProseMirror blockquote {
+  background: var(--blockquote-bg);
+  padding: 15px 20px 15px 25px;
+}
+
+body.theme-elegant #editor .ProseMirror table th {
+  border-bottom: 2px solid #c44b2b;
+}
+
+body.theme-elegant #editor .ProseMirror table td {
+  border-left: none;
+  border-right: none;
+}
+
+/* ======= 优雅 Plus (Elegant Plus) ======= */
+
+/* --- Design tokens: light (default) --- */
+body.theme-elegant-plus {
+  --bg-color: #f0edea;
+  --text-color: #2c2c2c;
+  --text-muted: #555;
+  --border-color: #d8d3ce;
+  --link-color: #c44b2b;
+  --code-bg: #e8e4df;
+  --code-block-bg: #2c2c2c;
+  --code-block-text: #e0dcd7;
+  --blockquote-border: #c44b2b;
+  --blockquote-bg: #eae6e1;
+  --table-header-bg: #eae6e1;
+  --table-border: #d8d3ce;
+  --selection-bg: rgba(196, 75, 43, 0.2);
+  --highlight-bg: rgba(196, 75, 43, 0.15);
+
+  /* ColaMD design tokens (UI-设计文档 §2.1) */
+  --cola-bg: #f0edea;
+  --cola-bg-soft: #eae6e1;
+  --cola-text: #2c2c2c;
+  --cola-text-soft: #555;
+  --cola-accent: #c44b2b;
+  --cola-accent-soft: rgba(196, 75, 43, 0.15);
+  --cola-border: #d8d3ce;
+  --cola-code-bg: #2c2c2c;
+  --cola-code-text: #e0dcd7;
+  --cola-inline-code-bg: #e8e4df;
+  --cola-selection: rgba(196, 75, 43, 0.2);
+  --cola-heading: #1a1a1a;
+  --cola-zebra: rgba(234, 230, 225, 0.5);
+  --cola-row-hover: rgba(196, 75, 43, 0.04);
+  --cola-rule-dot: rgba(196, 75, 43, 0.5);
+}
+
+/* --- Design tokens: dark (UI-设计文档 §2.2) --- */
+@media (prefers-color-scheme: dark) {
+  body.theme-elegant-plus {
+    --bg-color: #1c1a18;
+    --text-color: #d8d3ce;
+    --text-muted: #a89f96;
+    --border-color: #3a342e;
+    --link-color: #e0653f;
+    --code-bg: #2a2622;
+    --code-block-bg: #14110f;
+    --code-block-text: #e0dcd7;
+    --blockquote-border: #e0653f;
+    --blockquote-bg: #26231f;
+    --table-header-bg: #26231f;
+    --table-border: #3a342e;
+    --selection-bg: rgba(224, 101, 63, 0.25);
+    --highlight-bg: rgba(224, 101, 63, 0.18);
+
+    --cola-bg: #1c1a18;
+    --cola-bg-soft: #26231f;
+    --cola-text: #d8d3ce;
+    --cola-text-soft: #a89f96;
+    --cola-accent: #e0653f;
+    --cola-accent-soft: rgba(224, 101, 63, 0.18);
+    --cola-border: #3a342e;
+    --cola-code-bg: #14110f;
+    --cola-code-text: #e0dcd7;
+    --cola-inline-code-bg: #2a2622;
+    --cola-selection: rgba(224, 101, 63, 0.25);
+    --cola-heading: #e0dcd7;
+    --cola-zebra: rgba(38, 35, 31, 0.5);
+    --cola-row-hover: rgba(224, 101, 63, 0.06);
+    --cola-rule-dot: rgba(224, 101, 63, 0.45);
+  }
+}
+
+/* --- Page background / chrome --- */
+body.theme-elegant-plus {
+  background-color: var(--cola-bg);
+  color: var(--cola-text);
+}
+
+/* --- Font system (§3): serif body + monospaced code --- */
+body.theme-elegant-plus #editor .ProseMirror {
+  font-family: 'LXGW WenKai', 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+  text-align: justify;
+}
+
+body.theme-elegant-plus #editor .ProseMirror code,
+body.theme-elegant-plus #editor .ProseMirror pre,
+body.theme-elegant-plus #editor .ProseMirror kbd {
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: 0.88em;
+  letter-spacing: normal;
+}
+
+body.theme-elegant-plus #editor .ProseMirror table {
+  font-size: 0.95em;
+  letter-spacing: 0.02em;
+}
+
+/* --- Headings (§3.2 / §4.1) --- */
+body.theme-elegant-plus #editor .ProseMirror h1,
+body.theme-elegant-plus #editor .ProseMirror h2,
+body.theme-elegant-plus #editor .ProseMirror h3,
+body.theme-elegant-plus #editor .ProseMirror h4,
+body.theme-elegant-plus #editor .ProseMirror h5,
+body.theme-elegant-plus #editor .ProseMirror h6 {
+  color: var(--cola-heading);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  margin-top: 1.8em;
+  margin-bottom: 0.65em;
+}
+
+body.theme-elegant-plus #editor .ProseMirror h1 {
+  font-size: 1.8em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--cola-border);
+  margin-bottom: 0.65em;
+}
+
+body.theme-elegant-plus #editor .ProseMirror h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid var(--cola-border);
+  margin-bottom: 0.65em;
+}
+
+body.theme-elegant-plus #editor .ProseMirror h3 { font-size: 1.25em; }
+body.theme-elegant-plus #editor .ProseMirror h4 { font-size: 1.1em; }
+body.theme-elegant-plus #editor .ProseMirror h5 { font-size: 1em; }
+body.theme-elegant-plus #editor .ProseMirror h6 { font-size: 0.95em; }
+
+/* --- Paragraph --- */
+body.theme-elegant-plus #editor .ProseMirror p {
+  margin: 0.85em 0;
+}
+
+/* --- Strong / links (§2.1, §4.7) --- */
+body.theme-elegant-plus #editor .ProseMirror strong {
+  color: var(--cola-accent);
+  font-weight: 700;
+}
+
+body.theme-elegant-plus #editor .ProseMirror a {
+  color: var(--cola-accent);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 0 98%;
+  transition: background-size 0.3s ease;
+}
+
+body.theme-elegant-plus #editor .ProseMirror a:hover {
+  background-size: 100% 1px;
+  text-decoration: none;
+}
+
+/* --- Code block (§4.2) --- */
+body.theme-elegant-plus #editor .ProseMirror pre {
+  background: var(--cola-code-bg);
+  color: var(--cola-code-text);
+  line-height: 1.65;
+  padding: 20px 24px;
+  border-radius: 8px;
+  margin: 1.6em 0;
+  overflow-x: auto;
+  tab-size: 4;
+  position: relative;
+}
+
+body.theme-elegant-plus #editor .ProseMirror pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Code block copy button (§12) — hover top-right */
+body.theme-elegant-plus .code-copy-btn {
+  color: var(--cola-code-text);
+  background: rgba(20, 17, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+body.theme-elegant-plus .code-copy-btn:hover {
+  color: #fff;
+  border-color: var(--cola-accent);
+}
+
+/* --- Inline code (§4.3) --- */
+body.theme-elegant-plus #editor .ProseMirror code {
+  background: var(--cola-inline-code-bg);
+  color: var(--cola-accent);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin: 0 2px;
+}
+
+/* --- Highlight ==text== (§4.4) --- */
+body.theme-elegant-plus #editor .ProseMirror mark {
+  background: var(--cola-accent-soft);
+  color: inherit;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin: 0 1px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* --- Blockquote (§4.5) --- */
+body.theme-elegant-plus #editor .ProseMirror blockquote {
+  background: var(--cola-bg-soft);
+  color: var(--cola-text-soft);
+  border-left: 4px solid var(--cola-accent);
+  padding: 16px 22px 16px 26px;
+  border-radius: 0 6px 6px 0;
+  margin: 1.6em 0;
+  transition: border-left-width 0.2s ease;
+}
+
+body.theme-elegant-plus #editor .ProseMirror blockquote:hover {
+  border-left-width: 5px;
+}
+
+body.theme-elegant-plus #editor .ProseMirror blockquote > p:first-child {
+  margin-top: 0;
+}
+
+body.theme-elegant-plus #editor .ProseMirror blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+body.theme-elegant-plus #editor .ProseMirror blockquote code {
+  color: var(--cola-accent);
+}
+
+/* --- Table (§4.6) --- */
+body.theme-elegant-plus #editor .ProseMirror table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--cola-border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 1.6em 0;
+}
+
+body.theme-elegant-plus #editor .ProseMirror th,
+body.theme-elegant-plus #editor .ProseMirror td {
+  border: none;
+  border-bottom: 1px solid var(--cola-border);
+  padding: 11px 16px;
+  text-align: left;
+  vertical-align: top;
+}
+
+body.theme-elegant-plus #editor .ProseMirror th {
+  background: var(--cola-bg-soft);
+  border-bottom: 2px solid var(--cola-accent);
+  padding: 12px 16px;
+  font-weight: 700;
+}
+
+body.theme-elegant-plus #editor .ProseMirror tr:last-child td {
+  border-bottom: none;
+}
+
+body.theme-elegant-plus #editor .ProseMirror tbody tr:nth-child(even) {
+  background: var(--cola-zebra);
+}
+
+body.theme-elegant-plus #editor .ProseMirror tr:hover {
+  background: var(--cola-row-hover);
+}
+
+body.theme-elegant-plus #editor .ProseMirror th,
+body.theme-elegant-plus #editor .ProseMirror td {
+  font-family: 'LXGW WenKai', 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+}
+
+/* --- Horizontal rule with centered dot (§4.7) --- */
+body.theme-elegant-plus #editor .ProseMirror hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cola-border) 20%, var(--cola-border) 80%, transparent);
+  margin: 2.5em 0;
+  position: relative;
+}
+
+body.theme-elegant-plus #editor .ProseMirror hr::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cola-rule-dot);
+}
+
+/* --- Image (§4.7) --- */
+body.theme-elegant-plus #editor .ProseMirror img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+body.theme-elegant-plus #editor .ProseMirror p > img:only-child {
+  display: block;
+  margin: 1.6em auto;
+}
+
+/* --- Keyboard key kbd (§4.7) --- */
+body.theme-elegant-plus #editor .ProseMirror kbd {
+  display: inline-block;
+  padding: 3px 7px;
+  background: var(--cola-inline-code-bg);
+  color: var(--cola-text);
+  border: 1px solid var(--cola-border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  white-space: nowrap;
+}
+
+/* --- Strikethrough del (§4.7) --- */
+body.theme-elegant-plus #editor .ProseMirror del {
+  color: var(--cola-text-soft);
+  text-decoration: line-through var(--cola-accent);
+  opacity: 0.75;
+}
+
+/* --- Footnote (§4.7) --- */
+body.theme-elegant-plus #editor .ProseMirror sup {
+  font-size: 0.85em;
+  line-height: 0;
+}
+
+body.theme-elegant-plus #editor .ProseMirror sup a {
+  color: var(--cola-accent);
+}
+
+/* --- Drop cap (§4.8): first paragraph first character --- */
+body.theme-elegant-plus #editor .ProseMirror > p:first-child::first-letter {
+  float: left;
+  font-size: 2.8em;
+  font-weight: 700;
+  line-height: 0.82;
+  margin: 0.06em 0.1em 0 0;
+  color: var(--cola-heading);
+  font-family: 'LXGW WenKai', 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, 'Times New Roman', serif;
+}
+
+/* --- Text selection (§2.1) --- */
+body.theme-elegant-plus #editor .ProseMirror ::selection {
+  background: var(--cola-selection);
+}
+
+/* --- Code syntax highlight palette (§5, One Dark; tokens defined, no plugin) --- */
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-comment,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-quote {
+  color: #7c7873;
+  font-style: italic;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-keyword,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-selector-tag,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-literal {
+  color: #c678dd;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-string,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-attr-title {
+  color: #98c379;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-number,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-symbol,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-meta .hljs-string {
+  color: #d19a66;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-title,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-function .hljs-title,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-section {
+  color: #61afef;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-attr,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-tag,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-name {
+  color: #e06c75;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-built_in,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-type,
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-params {
+  color: #56b6c2;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-meta {
+  color: #abb2bf;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-deletion {
+  color: #e06c75;
+}
+body.theme-elegant-plus #editor .ProseMirror pre .hljs-addition {
+  color: #98c379;
+}
+
+body.theme-newsprint {
+  --bg-color: #f5f2eb;
+  --text-color: #1a1a1a;
+  --text-muted: #666;
+  --border-color: #d4d0c8;
+  --link-color: #2c5f8a;
+  --code-bg: rgba(0, 0, 0, 0.05);
+  --code-block-bg: #eae6de;
+  --blockquote-border: #999;
+  --table-header-bg: #eae6de;
+  --selection-bg: rgba(44, 95, 138, 0.15);
+  --highlight-bg: #f3e3a3;
+}
+
+body.theme-newsprint #editor .ProseMirror {
+  font-family: 'PT Serif', Georgia, serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+/* ======= SEARCH PANEL ======= */
+
+.search-panel {
+  position: fixed;
+  top: 10px;
+  right: 56px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  -webkit-app-region: no-drag;
+}
+
+.search-input {
+  width: 180px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: 13px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--link-color);
+}
+
+.search-count {
+  min-width: 32px;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.search-btn {
+  padding: 2px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: none;
+  color: var(--text-color);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: var(--code-bg);
+}
+
+.search-close {
+  font-size: 18px;
+}
+
+.search-match {
+  background: rgba(255, 213, 79, 0.4);
+  border-radius: 2px;
+}
+
+.search-match-current {
+  background: rgba(255, 152, 0, 0.6);
+  border-radius: 2px;
+}
+
+/* ======= MATH ======= */
+
+#editor .ProseMirror .math-inline {
+  padding: 0 2px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#editor .ProseMirror .math-inline:hover {
+  background: var(--code-bg);
+}
+
+#editor .ProseMirror .math-block {
+  margin: 1em 0;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#editor .ProseMirror .math-block:hover {
+  background: var(--code-bg);
+}
+
+.math-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+.math-modal {
+  display: flex;
+  width: 480px;
+  max-width: 90vw;
+  padding: 20px;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  -webkit-app-region: no-drag;
+}
+
+.math-modal h3 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.math-modal-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'SF Mono', 'Fira Code', Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+}
+
+.math-modal-input:focus {
+  border-color: var(--link-color);
+}
+
+.math-modal-options {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.math-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.math-modal-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.math-modal-btn.cancel {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-color);
+}
+
+.math-modal-btn.cancel:hover {
+  background: var(--code-bg);
+}
+
+.math-modal-btn.save {
+  background: var(--link-color);
+  color: #fff;
+}
+
+.math-modal-btn.save:hover {
+  opacity: 0.9;
+}

@@ -1,0 +1,38 @@
+{
+  "name": "colamd-elegant",
+  "version": "1.0.0",
+  "description": "The Agent Native Markdown Editor — 优雅 Plus 主题",
+  "main": "dist/main/index.js",
+  "author": {
+    "name": "momo"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/40740/mdapp-elegant",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/40740/mdapp-elegant.git"
+  },
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "dist": "electron-vite build && electron-builder",
+    "dist:mac": "electron-vite build && electron-builder --mac",
+    "dist:win": "electron-vite build && electron-builder --win",
+    "dist:linux": "electron-vite build && electron-builder --linux"
+  },
+  "dependencies": {
+    "@milkdown/kit": "^7.19.2",
+    "@milkdown/plugin-math": "^7.5.9",
+    "katex": "^0.16.47",
+    "remark-breaks": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.8",
+    "electron": "^34.0.0",
+    "electron-builder": "^26.0.0",
+    "electron-vite": "^3.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  }
+}
